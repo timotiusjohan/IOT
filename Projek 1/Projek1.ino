@@ -1,68 +1,52 @@
-#include "DHT.h"
 
-const int DHTPIN = 0;
-const int buttonPin = 4;
+const int ledHijau = 23;
 const int ledMerah = 27;
 const int ledKuning = 26;
-const int ledHijau = 23;
 
-#define DHTTYPE DHT11   // DHT 11
+int ledMerahState = LOW;
+int ledKuningState = LOW;
+int ledHijauState = LOW;
 
-DHT dht(DHTPIN, DHTTYPE);
+long StartTime = 0;
 
-int buttonState = 0;
-boolean start = false;
+
+long interval = 10000;
 
 void setup() {
-  delay(2000);
-  Serial.begin(9600);
-  Serial.println(F("DHT11 test!"));
-
-  pinMode(buttonPin, INPUT);
-  pinMode(ledMerah, OUTPUT);
-  pinMode(ledKuning, OUTPUT);
-  pinMode(ledHijau, OUTPUT);
-  
-  
-  dht.begin();
+    pinMode(ledMerah, OUTPUT);  
+    pinMode(ledKuning, OUTPUT);      
+    pinMode(ledHijau, OUTPUT);      
 }
 
-void loop() {
-  delay(200);
-  buttonState = digitalRead(buttonPin);
-  
+void loop(){
+  unsigned long CheckTime = millis();
+  unsigned long elapsedTime = CheckTime - StartTime;
 
-  Serial.println(start);
-  float t = dht.readTemperature();
-  if (isnan(t)) {
-    Serial.println(F("Failed to read from DHT sensor!"));
-    return;
+ if(elapsedTime > interval) {
+    StartTime = CheckTime;
+ }
+
+  if (elapsedTime < 4000){
+    ledMerahState = HIGH;             
+    ledKuningState = LOW;            
+    ledHijauState = LOW ; 
   }
 
-  if(buttonState == HIGH){
-    start = !start;
-  }
-  if(start==1){
-    if(t<35){
-        digitalWrite(ledMerah, LOW);
-        digitalWrite(ledKuning, LOW);
-        digitalWrite(ledHijau, HIGH);
-      }else if(t>=35 && t<=50){
-        digitalWrite(ledMerah, LOW);
-        digitalWrite(ledHijau, HIGH);
-        digitalWrite(ledKuning, HIGH);  
-      }else if(t>50){
-        digitalWrite(ledHijau, HIGH);
-        digitalWrite(ledKuning, HIGH);
-        digitalWrite(ledMerah, HIGH);  
-      }
-    Serial.print(t);
-    Serial.print(F("°C "));
-  }else{
-    digitalWrite(ledHijau, LOW);
-    digitalWrite(ledKuning, LOW);
-    digitalWrite(ledMerah, LOW); 
+   if (elapsedTime > 4000 && elapsedTime < 7000 ){
+    ledMerahState = LOW;             
+    ledKuningState = LOW;            
+    ledHijauState = HIGH;
   }
 
-  
+  if (elapsedTime > 7000  ){ 
+    ledMerahState = LOW;             
+    ledKuningState = HIGH;            
+    ledHijauState = LOW ;
+  }
+
+  digitalWrite(ledMerah,ledMerahState);
+  digitalWrite(ledKuning,ledKuningState);
+  digitalWrite(ledHijau,ledHijauState);
+
 }
+                       
