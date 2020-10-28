@@ -1,7 +1,7 @@
 
 const int ledHijau = 23;
-const int ledMerah = 27;
-const int ledKuning = 26;
+const int ledMerah = 26;
+const int ledKuning = 27;
 
 int ledMerahState = LOW;
 int ledKuningState = LOW;
